@@ -11,12 +11,16 @@
 #include <sys/socket.h>
 #include <sys/types.h>
 #include <arpa/inet.h>
+#include <pthread.h>
+
+#include "chat.h"
+
+int client;
 
 bool client_connect() {
 
   char *ip = "127.0.0.1";
   struct sockaddr_in caddr;
-  int client;
   
   caddr.sin_family = AF_INET;
   caddr.sin_port = htons(16453);
@@ -26,23 +30,27 @@ bool client_connect() {
   client = socket(AF_INET, SOCK_STREAM, 0);
 
   int connect_flag = connect(client, (const struct sockaddr *)&caddr, sizeof(caddr));
-
-  char message[6];
   
-  recv(client, message, sizeof(message), 0);
-
-  printf("%s", message);
+  pthread_t send_thread, receive_thread;
+  pthread_create(&send_thread, NULL, chat_send, &client);
+  pthread_create(&receive_thread, NULL, chat_receive, &client);
+  pthread_join(send_thread, NULL);
+  pthread_join(receive_thread, NULL);
   
   if (client == -1 || connect_flag == -1) {
     return false;
   }
-  
-  close(client);
-  client = -1;
 
   return true;
 }
 
+void client_disconnect() {
+  close(client);
+  client = -1;
+}
+
 int main() {
   client_connect();
+  //client_send();
+  client_disconnect();
 }
