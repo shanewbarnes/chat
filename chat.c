@@ -15,9 +15,10 @@ void *chat_send(void *arg) {
   char message[20];
   
   while (true) {
-    printf("Name: ");
+    // something is wroing here this is the problem
+
     scanf("%19s", message);
-    send(*client, message, sizeof(message), 0);
+    write(*client, message, sizeof(message));
   }
   return NULL;
 }
@@ -26,9 +27,17 @@ void *chat_receive(void *arg) {
 
   int *client = (int *) arg;
   char message[20];
-  
-  while (recv(*client, message, sizeof(message), 0) > 0) {
-    printf("\n%s\n", message);
+
+  while (read(*client, message, sizeof(message)) > 0) {
+    printf(" ");
+    printf("%s", message);
   }
   return NULL;
+}
+
+char* get_name() {
+  char *name = malloc(20);
+  printf("Enter your name:");
+  scanf("%19s", name);
+  return name;
 }
