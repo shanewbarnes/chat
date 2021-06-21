@@ -6,32 +6,32 @@
 #include <sys/socket.h>
 #include <sys/types.h>
 #include <arpa/inet.h>
+#include <assert.h>
 
 #include "chat.h"
 
 void *chat_send(void *arg) {
 
-  int *client = (int *) arg;
-  char message[20];
+  int *connection = (int *) arg;
+  char message[256];
   
   while (true) {
-    // something is wroing here this is the problem
-
-    scanf("%19s", message);
-    write(*client, message, sizeof(message));
-  }
+    scanf("%255s", message);
+    write(*connection, message, sizeof(message));
+  
+    }
   return NULL;
 }
 
 void *chat_receive(void *arg) {
 
-  int *client = (int *) arg;
-  char message[20];
+  int *connection = (int *) arg;
+  char message[256];
 
-  while (read(*client, message, sizeof(message)) > 0) {
-    printf(" ");
-    printf("%s", message);
+  while (read(*connection, message, sizeof(message)) > 0) { 
+    printf("\n%s\n", message);
   }
+  
   return NULL;
 }
 
