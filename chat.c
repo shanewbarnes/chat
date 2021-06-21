@@ -16,9 +16,8 @@ void *chat_send(void *arg) {
   char message[256];
   
   while (true) {
-    scanf("%255s", message);
+    fgets(message, sizeof(message), stdin);
     write(*connection, message, sizeof(message));
-  
     }
   return NULL;
 }
@@ -26,11 +25,13 @@ void *chat_send(void *arg) {
 void *chat_receive(void *arg) {
 
   int *connection = (int *) arg;
-  char message[256];
+  char word[256];
+  char message[256] = "";
 
-  while (read(*connection, message, sizeof(message)) > 0) { 
-    printf("\n%s\n", message);
+  while (read(*connection, word, sizeof(word)) > 0) {
+    printf("%s", word);
   }
+
   
   return NULL;
 }
