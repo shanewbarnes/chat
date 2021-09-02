@@ -35,17 +35,16 @@ bool open_connection() {
     return false;
   }
 
-  //args.name = get_name();
-  
+  args.name = get_name();
+
+  pthread_t send_thread, receive_thread;
   while (true) {
     
     client = accept(server, (struct sockaddr *)&caddr, &caddr_len);
-    //    args.client = client;
-
+    args.client = client;
     
-    pthread_t send_thread, receive_thread;
     pthread_create(&receive_thread, NULL, chat_receive, &client);
-    pthread_create(&send_thread, NULL, chat_send, &client);
+    pthread_create(&send_thread, NULL, chat_send, &args);
     pthread_join(receive_thread, NULL);    
     pthread_join(send_thread, NULL);
   }

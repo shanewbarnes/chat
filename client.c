@@ -17,22 +17,19 @@ char *name;
 bool client_connect() {
   
   struct sockaddr_in caddr;
+  struct sockaddr_in *ip_addr;
   struct hostent *host;
   struct receive_args args;
-  char *ip;
-  char hostbuffer[256];
+  char *ip = "127.0.0.1";
+  char hostname[256];
   
   caddr.sin_family = AF_INET;
   caddr.sin_port = htons(16455);
-
-  gethostname(hostbuffer, sizeof(hostbuffer));
-  host = gethostbyname(hostbuffer);
-  ip = inet_ntoa(*((struct in_addr*) host->h_addr_list[0]));
-
+  
   inet_aton(ip, &caddr.sin_addr);
-
+  
   client = socket(AF_INET, SOCK_STREAM, 0);
-  //args.client = client;
+  args.client = client;
 
   int connect_flag = connect(client, (const struct sockaddr *)&caddr, sizeof(caddr));
 
@@ -40,11 +37,11 @@ bool client_connect() {
     return false;
   }
 
-  //args.name = get_name();
+  args.name = get_name();
 
   pthread_t send_thread, receive_thread;
   pthread_create(&receive_thread, NULL, chat_receive, &client);
-  pthread_create(&send_thread, NULL, chat_send, &client);
+  pthread_create(&send_thread, NULL, chat_send, &args);
   pthread_join(receive_thread, NULL);
   pthread_join(send_thread, NULL);
   

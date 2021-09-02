@@ -10,35 +10,43 @@
 
 #include "chat.h"
 
-void *chat_send(void *arg) {
+void *chat_send(void *args) {
+  
+  struct receive_args *fargs = args;
+  int connection = fargs -> client;
+  char *fname = fargs -> name;
 
-  int *connection = (int *) arg;
+  strcat(fname, ": ");
+
   char message[256];
+  char messagebuf[256];  
   
   while (true) {
     fgets(message, sizeof(message), stdin);
-    write(*connection, message, sizeof(message));
-    }
+    strcpy(messagebuf, fname);
+    strcat(messagebuf, message);
+    write(connection, messagebuf, sizeof(messagebuf));
+    //memset(message, 0, strlen(message));
+    //memset(messagebuf, 0, strlen(messagebuf));
+  }
   return NULL;
 }
 
 void *chat_receive(void *arg) {
 
   int *connection = (int *) arg;
-  char word[256];
-  char message[256] = "";
 
-  while (read(*connection, word, sizeof(word)) > 0) {
-    printf("%s", word);
+  char message[256];
+
+  while (read(*connection, message, sizeof(message)) > 0) {
+    printf("%s\n", message);
   }
-
-  
   return NULL;
 }
 
 char* get_name() {
-  char *name = malloc(20);
-  printf("Enter your name:");
-  scanf("%19s", name);
+  char *name = malloc(32);
+  printf("Enter your name: ");
+  scanf("%31s", name);
   return name;
 }
