@@ -4,11 +4,11 @@ Direct messaging two-user chat application that utilizes network socket programm
 
 ## Technologies
 
-### C
+#### C
 
-### Socket Programming
+#### Socket Programming
 
-### Threading
+#### Threading
 
 ## Launch
 
