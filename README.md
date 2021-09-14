@@ -26,4 +26,4 @@ gcc -pthread -o client client.c chat.c
 ./client
 ```
 
-Note: Currently the code contains the loop back IP address. To message between different machines, the IP address of the server must be entered in the client file.
+Note: Currently the code contains the loop back IP address. To message between different machines, the IP address of the server must be entered in the client file at line 23.
